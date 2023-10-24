@@ -2,9 +2,9 @@ package com.coremedia.commerce.adapter.commercelayer.oauth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Arrays;
-import java.util.List;
-
+/**
+ * POJO for access token API entity.
+ */
 public class AccessToken {
 
     @JsonProperty("access_token")

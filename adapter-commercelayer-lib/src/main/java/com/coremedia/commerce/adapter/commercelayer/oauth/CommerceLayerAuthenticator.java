@@ -5,6 +5,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -35,10 +36,11 @@ public class CommerceLayerAuthenticator implements ClientHttpRequestInterceptor 
 
     private AccessToken token;
 
-    public CommerceLayerAuthenticator(@NonNull CommerceLayerApiConfigurationProperties properties) {
+    public CommerceLayerAuthenticator(@NonNull CommerceLayerApiConfigurationProperties properties,
+                                      @NonNull RestTemplateBuilder restTemplateBuilder) {
         this.clientId = properties.getClientId();
         this.clientSecret = properties.getClientSecret();
-        this.restTemplate = new RestTemplate();
+        this.restTemplate = restTemplateBuilder.build();
         this.tokenRequestUrl = buildAuthenticationUrl(properties);
     }
 
@@ -59,7 +61,7 @@ public class CommerceLayerAuthenticator implements ClientHttpRequestInterceptor 
         return token;
     }
 
-    public AccessToken refreshAccessToken() {
+    public @Nullable AccessToken refreshAccessToken() {
         if (token == null) {
             return requestNewToken();
         } else {
@@ -76,7 +78,7 @@ public class CommerceLayerAuthenticator implements ClientHttpRequestInterceptor 
         }
     }
 
-    private @Nullable AccessToken requestNewToken() {
+    public @Nullable AccessToken requestNewToken() {
         LOG.debug("Requesting new access token.");
 
         Map<String, String> payload = Map.of(
@@ -111,7 +113,6 @@ public class CommerceLayerAuthenticator implements ClientHttpRequestInterceptor 
         return UriComponentsBuilder.newInstance()
                 .scheme(properties.getProtocol())
                 .host(properties.getHost())
-                .port(properties.getPort())
                 .path(OAUTH_TOKEN_PATH)
                 .build().toString();
     }

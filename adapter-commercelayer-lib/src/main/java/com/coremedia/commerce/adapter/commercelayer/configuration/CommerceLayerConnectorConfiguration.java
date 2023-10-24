@@ -4,6 +4,7 @@ import com.coremedia.commerce.adapter.commercelayer.CommerceLayerApiConnector;
 import com.coremedia.commerce.adapter.commercelayer.oauth.CommerceLayerAuthenticator;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -27,8 +28,9 @@ public class CommerceLayerConnectorConfiguration {
     }
 
     @Bean
-    public CommerceLayerAuthenticator commerceLayerAuthenticator(@NonNull CommerceLayerApiConfigurationProperties properties) {
-        return new CommerceLayerAuthenticator(properties);
+    public CommerceLayerAuthenticator commerceLayerAuthenticator(@NonNull CommerceLayerApiConfigurationProperties properties,
+                                                                 @NonNull RestTemplateBuilder restTemplateBuilder) {
+        return new CommerceLayerAuthenticator(properties, restTemplateBuilder);
     }
 
     @Bean

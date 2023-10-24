@@ -31,7 +31,6 @@ public class CommerceLayerApiConnector {
 
     private final String protocol;
     private final String host;
-    private final String port;
     private final String basePath;
     private final CommerceLayerAuthenticator authenticator;
     private final RestTemplate restTemplate;
@@ -41,7 +40,6 @@ public class CommerceLayerApiConnector {
                                      @NonNull RestTemplate restTemplate) {
         this.protocol = properties.getProtocol();
         this.host = properties.getHost();
-        this.port = properties.getPort();
         this.basePath = properties.getBasePath();
         this.authenticator = authenticator;
         this.restTemplate = restTemplate;
@@ -129,7 +127,6 @@ public class CommerceLayerApiConnector {
             uriBuilder = UriComponentsBuilder.newInstance()
                     .scheme(protocol)
                     .host(host)
-                    .port(port)
                     .path(basePath);
 
             // Append resource path.

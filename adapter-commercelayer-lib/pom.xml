@@ -13,6 +13,20 @@
 
   <dependencies>
 
+    <!-- COREMEDIA dependencies -->
+    <dependency>
+      <groupId>com.coremedia.commerce.adapter.base</groupId>
+      <artifactId>adapter-api</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.coremedia.commerce.adapter.base</groupId>
+      <artifactId>adapter-base</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- THIRD-PARTY dependencies -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
@@ -41,26 +55,26 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- COREMEDIA dependencies -->
-    <!--<dependency>
-      <groupId>com.coremedia.commerce.adapter.base</groupId>
-      <artifactId>adapter-api</artifactId>
-    </dependency>-->
-
-    <!--<dependency>
-      <groupId>com.coremedia.commerce.adapter.base</groupId>
-      <artifactId>adapter-base</artifactId>
-    </dependency>-->
-
-    <!-- THIRD-PARTY dependencies -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
 
     <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -75,12 +89,30 @@
 
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-test</artifactId>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>

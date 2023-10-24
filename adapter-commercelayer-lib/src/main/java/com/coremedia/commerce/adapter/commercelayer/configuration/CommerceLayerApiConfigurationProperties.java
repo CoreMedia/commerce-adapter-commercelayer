@@ -16,11 +16,6 @@ public class CommerceLayerApiConfigurationProperties {
     private String host = "yourdomain.commercelayer.io";
 
     /**
-     * Port for REST API communication.
-     */
-    private String port = "";
-
-    /**
      * REST API base path.
      */
     private String basePath = "/api";
@@ -49,14 +44,6 @@ public class CommerceLayerApiConfigurationProperties {
 
     public void setHost(String host) {
         this.host = host;
-    }
-
-    public String getPort() {
-        return port;
-    }
-
-    public void setPort(String port) {
-        this.port = port;
     }
 
     public String getBasePath() {
