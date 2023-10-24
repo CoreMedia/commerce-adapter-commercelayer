@@ -14,11 +14,21 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class CommerceLayerAuthenticatorIT extends AbstractCommerceLayerIT {
 
     @Autowired
-    private CommerceLayerAuthenticator commerceLayerAuthenticator;
+    private CommerceLayerAuthenticator testling;
 
     @Test
     public void testRequestNewToken() {
-        AccessToken token = commerceLayerAuthenticator.requestNewToken();
+        AccessToken token = testling.requestNewToken();
+        validateToken(token);
+    }
+
+    @Test
+    public void testRefreshToken() {
+        AccessToken token = testling.refreshAccessToken();
+        validateToken(token);
+    }
+
+    private static void validateToken(AccessToken token) {
         assertNotNull(token);
         assertNotNull(token.getValue());
         assertEquals("Bearer", token.getTokenType());
