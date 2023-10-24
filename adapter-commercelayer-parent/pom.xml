@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.coremedia.commerce.adapter.base</groupId>
+    <artifactId>adapter-parent</artifactId>
+    <version>2.2.3</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>com.coremedia.commerce.adapter.commercelayer</groupId>
+  <artifactId>adapter-commercelayer-parent</artifactId>
+  <version>1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <properties>
+    <adapter.base.version>2.2.3</adapter.base.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.coremedia.commerce.adapter.base</groupId>
+        <artifactId>adapter-api</artifactId>
+        <version>${adapter.base.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.coremedia.commerce.adapter.base</groupId>
+        <artifactId>adapter-base</artifactId>
+        <version>${adapter.base.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.coremedia.commerce.adapter.base</groupId>
+        <artifactId>adapter-grpc-api</artifactId>
+        <version>${adapter.base.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+</project>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.coremedia.commerce.adapter.commercelayer</groupId>
+    <artifactId>adapter-commercelayer-parent</artifactId>
+    <version>1-SNAPSHOT</version>
+    <relativePath>../adapter-commercelayer-parent</relativePath>
+  </parent>
+
+  <artifactId>adapter-commercelayer-lib</artifactId>
+
+  <dependencies>
+
+    <!-- COREMEDIA dependencies -->
+    <!--<dependency>
+      <groupId>com.coremedia.commerce.adapter.base</groupId>
+      <artifactId>adapter-api</artifactId>
+    </dependency>-->
+
+    <!--<dependency>
+      <groupId>com.coremedia.commerce.adapter.base</groupId>
+      <artifactId>adapter-base</artifactId>
+    </dependency>-->
+
+    <!-- THIRD-PARTY dependencies -->
+    <!--<dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>-->
+
+    <!--<dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>-->
+
+    <!--<dependency>
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs-annotations</artifactId>
+      <scope>provided</scope>
+    </dependency>-->
+
+    <!--<dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>-->
+
+
+    <!-- TEST dependencies -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <finalName>${project.artifactId}</finalName>
+  </build>
+
+</project>
