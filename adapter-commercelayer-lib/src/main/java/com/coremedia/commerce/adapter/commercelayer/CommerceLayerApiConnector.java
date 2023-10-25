@@ -41,10 +41,10 @@ public class CommerceLayerApiConnector {
     }
 
     public <T> Optional<T> getResource(String resourcePath, ParameterizedTypeReference<T> responseType) {
-        return getResource(resourcePath, responseType, Collections.emptyMap());
+        return getResource(resourcePath, Collections.emptyMap(), responseType);
     }
 
-    public <T> Optional<T> getResource(String resourcePath, ParameterizedTypeReference<T> responseType, Map<String, String> urlParams) {
+    public <T> Optional<T> getResource(String resourcePath, Map<String, String> urlParams, ParameterizedTypeReference<T> responseType) {
         requireNonEmptyResourcePath(resourcePath);
         String url = buildRequestTemplateUrl(resourcePath, Collections.emptySet(), false);
 
