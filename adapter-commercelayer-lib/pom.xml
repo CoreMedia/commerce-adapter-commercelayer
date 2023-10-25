@@ -17,14 +17,13 @@
     <dependency>
       <groupId>com.coremedia.commerce.adapter.base</groupId>
       <artifactId>adapter-api</artifactId>
-      <scope>runtime</scope>
     </dependency>
 
     <dependency>
       <groupId>com.coremedia.commerce.adapter.base</groupId>
       <artifactId>adapter-base</artifactId>
-      <scope>runtime</scope>
     </dependency>
+
 
     <!-- THIRD-PARTY dependencies -->
     <dependency>
