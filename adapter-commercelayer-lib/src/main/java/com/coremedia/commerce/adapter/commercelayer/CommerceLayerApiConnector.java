@@ -44,16 +44,17 @@ public class CommerceLayerApiConnector {
         return getResource(resourcePath, Collections.emptyMap(), responseType);
     }
 
-    public <T> Optional<T> getResource(String resourcePath, Map<String, String> urlParams, ParameterizedTypeReference<T> responseType) {
+    public <T> Optional<T> getResource(String resourcePath, Map<String, String> pathParams, ParameterizedTypeReference<T> responseType) {
         requireNonEmptyResourcePath(resourcePath);
         String url = buildRequestTemplateUrl(resourcePath, Collections.emptySet(), false);
+        HttpEntity<Object> requestEntity = new HttpEntity<>(buildHttpHeaders());
 
         try {
-            ResponseEntity<T> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, responseType);
+            ResponseEntity<T> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, responseType, pathParams);
             return Optional.ofNullable(responseEntity.getBody());
 
         } catch (HttpClientErrorException ex) {
-            LOG.trace("Call to '{}' with params '{}' raised exception.", url, urlParams, ex);
+            LOG.trace("Call to '{}' with params '{}' raised exception.", url, pathParams, ex);
             HttpStatus statusCode = ex.getStatusCode();
             switch (statusCode) {
                 case NOT_FOUND: {
@@ -63,12 +64,13 @@ public class CommerceLayerApiConnector {
                 case UNAUTHORIZED: {
                     LOG.info("Retrying with a new access token ...");
                     authenticator.refreshAccessToken();
-                    ResponseEntity<T> responseEntity = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(buildHttpHeaders()), responseType, urlParams);
+
+                    ResponseEntity<T> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, responseType, pathParams);
                     return Optional.ofNullable(responseEntity.getBody());
                 }
                 default: {
                     throw new RuntimeException(
-                            String.format("REST call to '%s' with params '%s' failed. Exception: %s", url, urlParams, ex.getMessage()), ex);
+                            String.format("REST call to '%s' with params '%s' failed. Exception: %s", url, pathParams, ex.getMessage()), ex);
                 }
             }
         }
@@ -107,7 +109,7 @@ public class CommerceLayerApiConnector {
     private HttpHeaders buildHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        headers.setAccept(List.of(MediaType.parseMediaType("application/vnd.api+json")));
         return headers;
     }
 

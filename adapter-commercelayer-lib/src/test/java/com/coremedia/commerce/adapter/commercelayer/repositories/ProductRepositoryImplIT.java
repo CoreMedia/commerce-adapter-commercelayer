@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = {
@@ -38,6 +39,9 @@ public class ProductRepositoryImplIT extends AbstractCommerceLayerIT {
         IdQuery idQuery = IdQuery.from(ExternalId.of("WPwySLNVdQ"), ENTITY_PARAMS);
         Optional<Product> product = productRepository.getProductById(idQuery);
         assertTrue(product.isPresent());
+        assertEquals("WPwySLNVdQ", product.get().getExternalId().getValue());
+        assertEquals("Black Men T-Shirt with White Logo (L)", product.get().getName());
+        assertEquals("foo", product.get().getCategoryId().getValue());
     }
 
 }

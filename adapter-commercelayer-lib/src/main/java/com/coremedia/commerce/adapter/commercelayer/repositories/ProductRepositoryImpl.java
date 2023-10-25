@@ -3,6 +3,7 @@ package com.coremedia.commerce.adapter.commercelayer.repositories;
 import com.coremedia.commerce.adapter.base.entities.*;
 import com.coremedia.commerce.adapter.base.repositories.ProductRepository;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.SKU;
+import com.coremedia.commerce.adapter.commercelayer.api.entities.ShippingCategory;
 import com.coremedia.commerce.adapter.commercelayer.api.resources.SKUResource;
 import edu.umd.cs.findbugs.annotations.DefaultAnnotation;
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -52,10 +53,11 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     // --- private stuff ---
 
-    private Product toProduct(SKU sku) {
+    private Product toProduct(@NonNull SKU sku) {
         ExternalId externalId = ExternalId.of(sku.getId());
-        Id categoryId = ExternalId.of("c1");
-        return Product.builder(externalId, "Test product", categoryId).build();
+        Optional<ShippingCategory> shippingCategory = skuResource.getShippingCategoryForSku(sku.getId());
+        Id categoryId = ExternalId.of(shippingCategory.map(ShippingCategory::getId).orElse("_no-category"));
+        return Product.builder(externalId, sku.getAttributes().getName(), categoryId).build();
     }
 
 }

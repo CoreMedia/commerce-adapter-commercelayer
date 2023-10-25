@@ -10,6 +10,4 @@ public class MarketsResource {
         this.connector = connector;
     }
 
-
-
 }
