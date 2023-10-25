@@ -28,7 +28,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public Optional<Product> getProductById(IdQuery idQuery) {
-        return Optional.empty();
+        return skuResource.getSku(idQuery.getId().getValue()).map(this::toProduct);
     }
 
     @Override
@@ -59,5 +59,6 @@ public class ProductRepositoryImpl implements ProductRepository {
         Id categoryId = ExternalId.of(shippingCategory.map(ShippingCategory::getId).orElse("_no-category"));
         return Product.builder(externalId, sku.getAttributes().getName(), categoryId).build();
     }
+
 
 }
