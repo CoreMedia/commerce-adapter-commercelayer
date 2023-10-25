@@ -1,6 +1,7 @@
 package com.coremedia.commerce.adapter.commercelayer.configuration;
 
 import com.coremedia.commerce.adapter.commercelayer.CommerceLayerApiConnector;
+import com.coremedia.commerce.adapter.commercelayer.api.resources.MarketsResource;
 import com.coremedia.commerce.adapter.commercelayer.api.resources.SKUResource;
 import com.coremedia.commerce.adapter.commercelayer.oauth.CommerceLayerAuthenticator;
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -52,6 +53,10 @@ public class CommerceLayerConnectorConfiguration {
     @Bean
     public SKUResource skuResource(@NonNull CommerceLayerApiConnector apiConnector) {
         return new SKUResource(apiConnector);
+    }
+    @Bean
+    public MarketsResource marketsResource(@NonNull CommerceLayerApiConnector apiConnector) {
+        return new MarketsResource(apiConnector);
     }
 
 }
