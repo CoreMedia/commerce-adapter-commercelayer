@@ -50,6 +50,7 @@ public class CommerceLayerAuthenticator implements ClientHttpRequestInterceptor 
                                         ClientHttpRequestExecution execution) throws IOException {
         LOG.info("{} - {}", request.getMethod().toString(), request.getURI().toString());
         request.getHeaders().setBearerAuth(getAccessToken().getValue());
+        request.getHeaders().setAccept(List.of(MediaType.parseMediaType("application/vnd.api+json")));
         return execution.execute(request, body);
     }
 

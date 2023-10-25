@@ -2,20 +2,28 @@ package com.coremedia.commerce.adapter.commercelayer.repositories;
 
 import com.coremedia.commerce.adapter.base.entities.*;
 import com.coremedia.commerce.adapter.base.repositories.ProductRepository;
+import com.coremedia.commerce.adapter.commercelayer.api.entities.SKU;
+import com.coremedia.commerce.adapter.commercelayer.api.resources.SKUResource;
 import edu.umd.cs.findbugs.annotations.DefaultAnnotation;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @DefaultAnnotation(NonNull.class)
 public class ProductRepositoryImpl implements ProductRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+    @Autowired
+    private SKUResource skuResource;
 
     @Override
     public Optional<Product> getProductById(IdQuery idQuery) {
@@ -29,11 +37,25 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public Iterable<Product> getProducts(EntityParams entityParams) {
-        return ProductRepository.super.getProducts(entityParams);
+        LOG.debug("Fetching products.");
+        List<SKU> skus = skuResource.listSKUs();
+        List<Product> products = skus.stream().map(this::toProduct).collect(Collectors.toList());
+        LOG.debug("Fetched products: {}.", products.size());
+        return products;
     }
 
     @Override
     public SearchResult search(SearchQuery searchQuery) {
         return null;
     }
+
+
+    // --- private stuff ---
+
+    private Product toProduct(SKU sku) {
+        ExternalId externalId = ExternalId.of(sku.getId());
+        Id categoryId = ExternalId.of("c1");
+        return Product.builder(externalId, "Test product", categoryId).build();
+    }
+
 }

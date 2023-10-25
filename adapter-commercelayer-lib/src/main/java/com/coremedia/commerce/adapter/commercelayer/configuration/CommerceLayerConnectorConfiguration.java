@@ -1,6 +1,7 @@
 package com.coremedia.commerce.adapter.commercelayer.configuration;
 
 import com.coremedia.commerce.adapter.commercelayer.CommerceLayerApiConnector;
+import com.coremedia.commerce.adapter.commercelayer.api.resources.SKUResource;
 import com.coremedia.commerce.adapter.commercelayer.oauth.CommerceLayerAuthenticator;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -44,6 +45,13 @@ public class CommerceLayerConnectorConfiguration {
         interceptors.add(commerceLayerAuthenticator);
         restTemplate.setInterceptors(interceptors);
         return restTemplate;
+    }
+
+
+    // --- Commerce Hub Repositories ---
+    @Bean
+    public SKUResource skuResource(@NonNull CommerceLayerApiConnector apiConnector) {
+        return new SKUResource(apiConnector);
     }
 
 }
