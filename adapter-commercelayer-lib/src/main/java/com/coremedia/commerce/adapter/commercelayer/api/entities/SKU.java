@@ -12,6 +12,9 @@ public class SKU {
     @JsonProperty("type")
     private String type;
 
+    @JsonProperty("attributes")
+    private SKUAttributes attributes;
+
     public String getId() {
         return id;
     }
@@ -27,4 +30,23 @@ public class SKU {
     public void setType(String type) {
         this.type = type;
     }
+
+    public SKUAttributes getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(SKUAttributes attributes) {
+        this.attributes = attributes;
+    }
+
+    public static class SKUAttributes {
+        @JsonProperty("code") private String code;
+        @JsonProperty("name") private String name;
+        @JsonProperty("description") private String description;
+        @JsonProperty("image_url") private String imageUrl;
+        @JsonProperty("do_not_ship") private boolean doNotShip;
+        @JsonProperty("do_not_track") private boolean doNotTrack;
+        @JsonProperty("reference") private String reference;
+    }
+
 }
