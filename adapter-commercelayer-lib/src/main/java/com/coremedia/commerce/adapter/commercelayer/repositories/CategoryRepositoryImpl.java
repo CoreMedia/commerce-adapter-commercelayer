@@ -22,11 +22,19 @@ import java.util.stream.Collectors;
 @DefaultAnnotation(NonNull.class)
 public class CategoryRepositoryImpl implements CategoryRepository {
 
+    public static ExternalId ROOT_CATEGORY_ID = ExternalId.of("root");
+    public static ExternalId SHIPPING_CATEGORIES_CATEGORY_ID = ExternalId.of("shipping-categories");
+    public static ExternalId SKU_LISTS_CATEGORY_ID = ExternalId.of("sku-lists");
+
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private ShippingCategoriesResource shippingCategoriesResource;
     private SKUListsResource skuListsResource;
     private SKUResource skuResource;
+
+    private Category rootCategory;
+    private Category shippingCategoriesCategory;
+    private Category skuListsCategory;
 
     public CategoryRepositoryImpl(@NonNull ShippingCategoriesResource shippingCategoriesResource,
                                   @NonNull SKUListsResource skuListsResource,
@@ -34,11 +42,13 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         this.shippingCategoriesResource = shippingCategoriesResource;
         this.skuListsResource = skuListsResource;
         this.skuResource = skuResource;
+
+        initVirtualCategories();
     }
 
     @Override
     public Iterable<Category> getCategories(EntityParams entityParams) {
-        LOG.debug("Fetching all categories.");
+        LOG.debug("Fetching categories for entity params: {}.", entityParams);
         List<ShippingCategory> shippingCategories = shippingCategoriesResource.listShippingCategories();
         return shippingCategories.stream().map(this::toCategory).collect(Collectors.toList());
     }
@@ -46,7 +56,20 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     @Override
     public Optional<Category> getCategoryById(IdQuery idQuery) {
         LOG.debug("Fetching category for id query: {}.", idQuery);
-        Optional<Category> category = shippingCategoriesResource.getShippingCategory(idQuery.getId().getValue()).map(this::toCategory);
+
+        Id categoryId = idQuery.getId();
+
+        Optional<Category> category;
+        if (ROOT_CATEGORY_ID.equals(categoryId)) {
+            category = Optional.of(rootCategory);
+        } else if (SHIPPING_CATEGORIES_CATEGORY_ID.equals(categoryId)) {
+            category = Optional.of(shippingCategoriesCategory);
+        } else if (SKU_LISTS_CATEGORY_ID.equals(categoryId)) {
+            category = Optional.of(skuListsCategory);
+        } else {
+            category = shippingCategoriesResource.getShippingCategory(categoryId.getValue()).map(this::toCategory);
+        }
+
         return category;
     }
 
@@ -76,4 +99,27 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         return categoryBuilder.build();
     }
 
+    private void initVirtualCategories() {
+        rootCategory = createRootCategory();
+        shippingCategoriesCategory = createShippingCategoriesCategory();
+        skuListsCategory = createSkuListsCategory();
+    }
+
+    private Category createRootCategory() {
+        CategoryBuilder categoryBuilder = Category.builder(ROOT_CATEGORY_ID, "Root");
+        categoryBuilder.setChildIds(List.of(SHIPPING_CATEGORIES_CATEGORY_ID, SKU_LISTS_CATEGORY_ID));
+        return categoryBuilder.build();
+    }
+
+    private Category createShippingCategoriesCategory() {
+        CategoryBuilder categoryBuilder = Category.builder(SHIPPING_CATEGORIES_CATEGORY_ID, "Shipping Categories");
+        categoryBuilder.setParentId(rootCategory.getExternalId());
+        return categoryBuilder.build();
+    }
+
+    private Category createSkuListsCategory() {
+        CategoryBuilder categoryBuilder = Category.builder(SKU_LISTS_CATEGORY_ID, "SKU Lists");
+        categoryBuilder.setParentId(rootCategory.getExternalId());
+        return categoryBuilder.build();
+    }
 }
