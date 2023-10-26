@@ -9,7 +9,6 @@ import edu.umd.cs.findbugs.annotations.DefaultAnnotation;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.lang.invoke.MethodHandles;
@@ -23,22 +22,27 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    @Autowired
     private SKUResource skuResource;
+
+    public ProductRepositoryImpl(SKUResource skuResource) {
+        this.skuResource = skuResource;
+    }
 
     @Override
     public Optional<Product> getProductById(IdQuery idQuery) {
+        LOG.debug("Fetching product for id query: {}.", idQuery);
         return skuResource.getSku(idQuery.getId().getValue()).map(this::toProduct);
     }
 
     @Override
     public Optional<Product> getProductBySeoSegment(SeoSegmentQuery seoSegmentQuery) {
+        LOG.debug("Fetching product for seo segment query: {}.", seoSegmentQuery);
         return ProductRepository.super.getProductBySeoSegment(seoSegmentQuery);
     }
 
     @Override
     public Iterable<Product> getProducts(EntityParams entityParams) {
-        LOG.debug("Fetching products.");
+        LOG.debug("Fetching all products.");
         List<SKU> skus = skuResource.listSKUs();
         List<Product> products = skus.stream().map(this::toProduct).collect(Collectors.toList());
         LOG.debug("Fetched products: {}.", products.size());

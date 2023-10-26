@@ -24,7 +24,6 @@
       <artifactId>adapter-base</artifactId>
     </dependency>
 
-
     <!-- THIRD-PARTY dependencies -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -79,6 +78,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>

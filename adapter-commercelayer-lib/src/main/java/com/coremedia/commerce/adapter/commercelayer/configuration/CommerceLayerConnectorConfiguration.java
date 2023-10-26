@@ -2,7 +2,9 @@ package com.coremedia.commerce.adapter.commercelayer.configuration;
 
 import com.coremedia.commerce.adapter.commercelayer.CommerceLayerApiConnector;
 import com.coremedia.commerce.adapter.commercelayer.api.resources.MarketsResource;
+import com.coremedia.commerce.adapter.commercelayer.api.resources.SKUListsResource;
 import com.coremedia.commerce.adapter.commercelayer.api.resources.SKUResource;
+import com.coremedia.commerce.adapter.commercelayer.api.resources.ShippingCategoriesResource;
 import com.coremedia.commerce.adapter.commercelayer.oauth.CommerceLayerAuthenticator;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -49,14 +51,26 @@ public class CommerceLayerConnectorConfiguration {
     }
 
 
-    // --- Commerce Hub Repositories ---
-    @Bean
-    public SKUResource skuResource(@NonNull CommerceLayerApiConnector apiConnector) {
-        return new SKUResource(apiConnector);
-    }
+    // --- Commerce Layer API resources ---
     @Bean
     public MarketsResource marketsResource(@NonNull CommerceLayerApiConnector apiConnector) {
         return new MarketsResource(apiConnector);
     }
+
+    @Bean
+    public ShippingCategoriesResource shippingCategoriesResource(@NonNull CommerceLayerApiConnector apiConnector) {
+        return new ShippingCategoriesResource(apiConnector);
+    }
+
+    @Bean
+    public SKUListsResource skuListsResource(@NonNull CommerceLayerApiConnector apiConnector) {
+        return new SKUListsResource(apiConnector);
+    }
+
+    @Bean
+    public SKUResource skuResource(@NonNull CommerceLayerApiConnector apiConnector) {
+        return new SKUResource(apiConnector);
+    }
+
 
 }
