@@ -2,7 +2,9 @@ package com.coremedia.commerce.adapter.commercelayer.repositories;
 
 import com.coremedia.commerce.adapter.base.entities.*;
 import com.coremedia.commerce.adapter.base.repositories.CategoryRepository;
+import com.coremedia.commerce.adapter.commercelayer.api.entities.CommerceLayerApiEntity;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.SKU;
+import com.coremedia.commerce.adapter.commercelayer.api.entities.SKUList;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.ShippingCategory;
 import com.coremedia.commerce.adapter.commercelayer.api.resources.SKUListsResource;
 import com.coremedia.commerce.adapter.commercelayer.api.resources.SKUResource;
@@ -32,6 +34,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     private SKUListsResource skuListsResource;
     private SKUResource skuResource;
 
+    /** Virtual categories **/
     private Category rootCategory;
     private Category shippingCategoriesCategory;
     private Category skuListsCategory;
@@ -67,6 +70,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         } else if (SKU_LISTS_CATEGORY_ID.equals(categoryId)) {
             category = Optional.of(skuListsCategory);
         } else {
+            // fetch category via API
             category = shippingCategoriesResource.getShippingCategory(categoryId.getValue()).map(this::toCategory);
         }
 
@@ -89,6 +93,9 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         categoryBuilder.setSeoSegment(shippingCategory.getAttributes().getReference());
         categoryBuilder.setTitle(name);
 
+        // Set parent link to virtual "shipping categories" category
+        categoryBuilder.setParentId(SHIPPING_CATEGORIES_CATEGORY_ID);
+
         // Add assigned products
         List<Id> assignedProducts = shippingCategoriesResource.getAssociatedSkus(shippingCategory.getId()).stream()
                 .map(SKU::getId)
@@ -97,6 +104,11 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         categoryBuilder.setProductIds(assignedProducts);
 
         return categoryBuilder.build();
+    }
+
+    private Category toCategory(SKUList skuList) {
+        // TODO: Implement (see above #toCategory)
+        return null;
     }
 
     private void initVirtualCategories() {
@@ -111,15 +123,32 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         return categoryBuilder.build();
     }
 
+    /**
+     * Create a virtual category as an entry point
+     * for all <a href="https://docs.commercelayer.io/core/v/api-reference/shipping_categories">Shipping Categories</a>.
+     *
+     * @return
+     */
     private Category createShippingCategoriesCategory() {
         CategoryBuilder categoryBuilder = Category.builder(SHIPPING_CATEGORIES_CATEGORY_ID, "Shipping Categories");
         categoryBuilder.setParentId(rootCategory.getExternalId());
+
+        // Add all direct shipping categories
+        List<Id> shippingCategoryIds = shippingCategoriesResource.listShippingCategories().stream()
+                .map(CommerceLayerApiEntity::getId)
+                .map(ExternalId::of)
+                .collect(Collectors.toList());
+        categoryBuilder.setChildIds(shippingCategoryIds);
+
         return categoryBuilder.build();
     }
 
     private Category createSkuListsCategory() {
         CategoryBuilder categoryBuilder = Category.builder(SKU_LISTS_CATEGORY_ID, "SKU Lists");
         categoryBuilder.setParentId(rootCategory.getExternalId());
+
+        // TODO: Fetch all SKU lists and add them like we do with shipping categories (see above)
+
         return categoryBuilder.build();
     }
 }

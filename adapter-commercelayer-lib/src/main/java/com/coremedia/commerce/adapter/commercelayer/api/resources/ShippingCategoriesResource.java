@@ -1,6 +1,7 @@
 package com.coremedia.commerce.adapter.commercelayer.api.resources;
 
 import com.coremedia.commerce.adapter.commercelayer.CommerceLayerApiConnector;
+import com.coremedia.commerce.adapter.commercelayer.api.entities.DataEntity;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.DataListEntity;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.SKU;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.ShippingCategory;
@@ -31,9 +32,11 @@ public class ShippingCategoriesResource extends CommerceLayerApiResource {
     }
 
     public Optional<ShippingCategory> getShippingCategory(String id) {
-        ParameterizedTypeReference<ShippingCategory> responseType = new ParameterizedTypeReference<>() {
+        ParameterizedTypeReference<DataEntity<ShippingCategory>> responseType = new ParameterizedTypeReference<>() {
         };
-        return getConnector().getResource("/shipping_categories/{id}", Map.of(ID_PARAM, id), responseType);
+        Optional<DataEntity<ShippingCategory>> responseEntity = getConnector().getResource("/shipping_categories/{id}", Map.of(ID_PARAM, id), responseType);
+        Optional<ShippingCategory> shippingCategory = responseEntity.map(DataEntity::getData);
+        return shippingCategory;
     }
 
     public List<SKU> getAssociatedSkus(String id) {

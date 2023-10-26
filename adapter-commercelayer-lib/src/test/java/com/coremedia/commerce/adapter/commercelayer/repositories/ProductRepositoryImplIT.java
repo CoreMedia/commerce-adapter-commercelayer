@@ -41,7 +41,7 @@ public class ProductRepositoryImplIT extends AbstractCommerceLayerIT {
         assertTrue(product.isPresent());
         assertEquals("WPwySLNVdQ", product.get().getExternalId().getValue());
         assertEquals("Black Men T-Shirt with White Logo (L)", product.get().getName());
-        assertEquals("foo", product.get().getCategoryId().getValue());
+        assertEquals("zwzQeFeeoN", product.get().getCategoryId().getValue());
     }
 
 }
