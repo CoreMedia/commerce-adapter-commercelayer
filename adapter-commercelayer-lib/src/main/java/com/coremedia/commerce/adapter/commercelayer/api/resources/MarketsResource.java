@@ -8,6 +8,7 @@ import org.springframework.core.ParameterizedTypeReference;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class MarketsResource extends CommerceLayerApiResource {
@@ -27,7 +28,18 @@ public class MarketsResource extends CommerceLayerApiResource {
     public Optional<Market> getMarket(String id) {
         ParameterizedTypeReference<DataEntity<Market>> responseType = new ParameterizedTypeReference<>() {
         };
-        Optional<DataEntity<Market>> responseEntity = getConnector().getResource("/markets/{id}", responseType);
+        Optional<DataEntity<Market>> responseEntity = getConnector().getResource("/markets/{id}", Map.of(ID_PARAM, id), responseType);
         return responseEntity.map(DataEntity::getData);
+    }
+    public Optional<Market> searchMarket(String name) {
+        Optional<Market> result = Optional.empty();
+        for (Market m: listMarkets()) {
+            if (m.getAttributes().getName().equals(name)) {
+                result = Optional.of(m);
+            }
+        
+        }
+        return result;
+    
     }
 }

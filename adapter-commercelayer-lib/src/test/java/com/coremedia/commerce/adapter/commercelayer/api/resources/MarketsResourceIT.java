@@ -24,6 +24,11 @@ public class MarketsResourceIT extends AbstractCommerceLayerIT {
     Optional<Market> market = testling.getMarket("BgwdGhdPKl");
     validateMarket(market);
   }
+  @Test
+  public void searchMarketName() {
+    Optional<Market> market = testling.searchMarket("USA");
+    validateMarket(market);
+  }
 
   private static void validateMarket(Optional<Market> market) {
     assertTrue(market.isPresent());
