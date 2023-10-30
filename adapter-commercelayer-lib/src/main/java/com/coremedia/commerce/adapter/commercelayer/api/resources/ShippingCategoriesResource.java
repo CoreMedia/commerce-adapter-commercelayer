@@ -2,7 +2,7 @@ package com.coremedia.commerce.adapter.commercelayer.api.resources;
 
 import com.coremedia.commerce.adapter.commercelayer.CommerceLayerApiConnector;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.DataEntity;
-import com.coremedia.commerce.adapter.commercelayer.api.entities.DataListEntity;
+import com.coremedia.commerce.adapter.commercelayer.api.entities.PaginatedEntity;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.SKU;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.ShippingCategory;
 import org.slf4j.Logger;
@@ -24,10 +24,10 @@ public class ShippingCategoriesResource extends CommerceLayerApiResource {
     }
 
     public List<ShippingCategory> listShippingCategories() {
-        ParameterizedTypeReference<DataListEntity<ShippingCategory>> responseType = new ParameterizedTypeReference<>() {
+        ParameterizedTypeReference<PaginatedEntity<ShippingCategory>> responseType = new ParameterizedTypeReference<>() {
         };
-        Optional<DataListEntity<ShippingCategory>> responseEntity = getConnector().getResource("/shipping_categories", responseType);
-        Optional<List<ShippingCategory>> shippingCategories = responseEntity.map(DataListEntity::getData);
+        Optional<PaginatedEntity<ShippingCategory>> responseEntity = getConnector().getResource("/shipping_categories", responseType);
+        Optional<List<ShippingCategory>> shippingCategories = responseEntity.map(PaginatedEntity::getData);
         return shippingCategories.orElse(Collections.emptyList());
     }
 
@@ -40,10 +40,10 @@ public class ShippingCategoriesResource extends CommerceLayerApiResource {
     }
 
     public List<SKU> getAssociatedSkus(String id) {
-        ParameterizedTypeReference<DataListEntity<SKU>> responseType = new ParameterizedTypeReference<>() {
+        ParameterizedTypeReference<PaginatedEntity<SKU>> responseType = new ParameterizedTypeReference<>() {
         };
-        Optional<DataListEntity<SKU>> responseEntity = getConnector().getResource("/shipping_categories/{id}/skus", Map.of(ID_PARAM, id), responseType);
-        Optional<List<SKU>> skus = responseEntity.map(DataListEntity::getData);
+        Optional<PaginatedEntity<SKU>> responseEntity = getConnector().getResource("/shipping_categories/{id}/skus", Map.of(ID_PARAM, id), responseType);
+        Optional<List<SKU>> skus = responseEntity.map(PaginatedEntity::getData);
         return skus.orElse(Collections.emptyList());
     }
 

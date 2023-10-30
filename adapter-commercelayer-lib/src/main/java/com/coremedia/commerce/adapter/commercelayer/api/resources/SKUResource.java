@@ -2,7 +2,7 @@ package com.coremedia.commerce.adapter.commercelayer.api.resources;
 
 import com.coremedia.commerce.adapter.commercelayer.CommerceLayerApiConnector;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.DataEntity;
-import com.coremedia.commerce.adapter.commercelayer.api.entities.DataListEntity;
+import com.coremedia.commerce.adapter.commercelayer.api.entities.PaginatedEntity;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.SKU;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.ShippingCategory;
 import com.google.common.collect.ImmutableListMultimap;
@@ -28,9 +28,9 @@ public class SKUResource extends CommerceLayerApiResource {
     }
 
     public List<SKU> listSKUs() {
-        ParameterizedTypeReference<DataListEntity<SKU>> responseType = new ParameterizedTypeReference<>() {};
-        Optional<DataListEntity<SKU>> responseEntity = getConnector().getResource("/skus", responseType);
-        Optional<List<SKU>> skus = responseEntity.map(DataListEntity::getData);
+        ParameterizedTypeReference<PaginatedEntity<SKU>> responseType = new ParameterizedTypeReference<>() {};
+        Optional<PaginatedEntity<SKU>> responseEntity = getConnector().getResource("/skus", responseType);
+        Optional<List<SKU>> skus = responseEntity.map(PaginatedEntity::getData);
         return  skus.orElse(Collections.emptyList());
     }
 
@@ -53,10 +53,10 @@ public class SKUResource extends CommerceLayerApiResource {
         }
 
         ListMultimap<String, String> queryParams = ImmutableListMultimap.of("filter[q][name_or_code_cont]", searchTerm); // Searching for name or code attributes
-        ParameterizedTypeReference<DataListEntity<SKU>> responseType = new ParameterizedTypeReference<>() {
+        ParameterizedTypeReference<PaginatedEntity<SKU>> responseType = new ParameterizedTypeReference<>() {
         };
-        Optional<DataListEntity<SKU>> responseEntity = getConnector().getResource("/skus", Collections.emptyMap(), queryParams, responseType);
-        Optional<List<SKU>> skus = responseEntity.map(DataListEntity::getData);
+        Optional<PaginatedEntity<SKU>> responseEntity = getConnector().getResource("/skus", Collections.emptyMap(), queryParams, responseType);
+        Optional<List<SKU>> skus = responseEntity.map(PaginatedEntity::getData);
         return skus.orElse(Collections.emptyList());
     }
 

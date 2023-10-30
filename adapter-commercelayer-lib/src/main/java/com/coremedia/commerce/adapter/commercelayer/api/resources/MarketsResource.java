@@ -2,7 +2,7 @@ package com.coremedia.commerce.adapter.commercelayer.api.resources;
 
 import com.coremedia.commerce.adapter.commercelayer.CommerceLayerApiConnector;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.DataEntity;
-import com.coremedia.commerce.adapter.commercelayer.api.entities.DataListEntity;
+import com.coremedia.commerce.adapter.commercelayer.api.entities.PaginatedEntity;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.Market;
 import org.springframework.core.ParameterizedTypeReference;
 
@@ -18,10 +18,10 @@ public class MarketsResource extends CommerceLayerApiResource {
     }
 
     public List<Market> listMarkets() {
-        ParameterizedTypeReference<DataListEntity<Market>> responseType = new ParameterizedTypeReference<>() {
+        ParameterizedTypeReference<PaginatedEntity<Market>> responseType = new ParameterizedTypeReference<>() {
         };
-        Optional<DataListEntity<Market>> responseEntity = getConnector().getResource("/markets", responseType);
-        Optional<List<Market>> markets = responseEntity.map(DataListEntity::getData);
+        Optional<PaginatedEntity<Market>> responseEntity = getConnector().getResource("/markets", responseType);
+        Optional<List<Market>> markets = responseEntity.map(PaginatedEntity::getData);
         return markets.orElse(Collections.emptyList());
     }
 
