@@ -57,6 +57,7 @@ public class CommerceLayerAuthenticator implements ClientHttpRequestInterceptor 
         if (token == null) {
             token = requestNewToken();
         } else if (token.isExpired()) {
+            LOG.info("Access token is expired. {}", token);
             token = refreshAccessToken();
         }
         return token;
@@ -101,7 +102,7 @@ public class CommerceLayerAuthenticator implements ClientHttpRequestInterceptor 
         try {
             ResponseEntity<AccessToken> responseEntity = restTemplate.exchange(tokenRequestUrl, HttpMethod.POST, requestEntity, AccessToken.class);
             AccessToken token = responseEntity.getBody();
-            LOG.info("Fetched access token {}.", token);
+            LOG.info("Fetched access token: {}", token);
             return token;
 
         } catch (HttpClientErrorException e) {

@@ -63,7 +63,7 @@ public class AccessToken {
     }
 
     public boolean isExpired() {
-        return System.currentTimeMillis() - createdAt > (expiresIn - 10) * 1000; // expires 10 seconds earlier
+        return System.currentTimeMillis() - createdAt * 1000 > (expiresIn - 10) * 1000; // expires 10 seconds earlier
     }
 
     @Override
@@ -71,6 +71,8 @@ public class AccessToken {
         return getClass().getSimpleName() + "{" +
                 "value=" + value +
                 ", tokenType=" + tokenType +
+                ", createdAt=" + createdAt +
+                ", expiresIn=" +  expiresIn +
                 ", scope=" + scope +
                 ", expired=" + isExpired() +
                 "}";
