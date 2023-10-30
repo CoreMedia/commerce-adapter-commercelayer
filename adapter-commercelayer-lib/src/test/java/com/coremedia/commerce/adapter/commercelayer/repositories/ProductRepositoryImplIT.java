@@ -1,9 +1,6 @@
 package com.coremedia.commerce.adapter.commercelayer.repositories;
 
-import com.coremedia.commerce.adapter.base.entities.EntityParams;
-import com.coremedia.commerce.adapter.base.entities.ExternalId;
-import com.coremedia.commerce.adapter.base.entities.IdQuery;
-import com.coremedia.commerce.adapter.base.entities.Product;
+import com.coremedia.commerce.adapter.base.entities.*;
 import com.coremedia.commerce.adapter.base.repositories.ProductRepository;
 import com.coremedia.commerce.adapter.commercelayer.AbstractCommerceLayerIT;
 import org.junit.jupiter.api.Test;
@@ -14,8 +11,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = {
         AbstractCommerceLayerIT.TestConfig.class,
@@ -42,6 +38,20 @@ public class ProductRepositoryImplIT extends AbstractCommerceLayerIT {
         assertEquals("WPwySLNVdQ", product.get().getExternalId().getValue());
         assertEquals("Black Men T-Shirt with White Logo (L)", product.get().getName());
         assertEquals("zwzQeFeeoN", product.get().getCategoryId().getValue());
+    }
+
+    @Test
+    public void testSearchProducts() {
+        SearchQuery searchQuery = SearchQuery.builder(ENTITY_PARAMS).setSearchTerm("shirt").build();
+        SearchResult result = productRepository.search(searchQuery);
+        assertNotNull(result);
+        assertEquals(1, result.getTotalCount());
+        assertEquals("WPwySLNVdQ", result.getEntityIds().get(0).getValue());
+
+        searchQuery = SearchQuery.builder(ENTITY_PARAMS).setSearchTerm("nonexisting").build();
+        result = productRepository.search(searchQuery);
+        assertNotNull(result);
+        assertEquals(0, result.getTotalCount());
     }
 
 }

@@ -5,6 +5,10 @@ import com.coremedia.commerce.adapter.commercelayer.api.entities.DataEntity;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.DataListEntity;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.SKU;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.ShippingCategory;
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ListMultimap;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -41,6 +45,19 @@ public class SKUResource extends CommerceLayerApiResource {
         ParameterizedTypeReference<DataEntity<ShippingCategory>> responseType = new ParameterizedTypeReference<>() {};
         Optional<DataEntity<ShippingCategory>> responseEntity = getConnector().getResource("/skus/{id}/shipping_category", Map.of(ID_PARAM, id), responseType);
         return responseEntity.map(DataEntity::getData);
+    }
+
+    public List<SKU> searchSkus(@NonNull String searchTerm) {
+        if (StringUtils.isBlank(searchTerm)) {
+            return Collections.emptyList();
+        }
+
+        ListMultimap<String, String> queryParams = ImmutableListMultimap.of("filter[q][name_or_code_cont]", searchTerm); // Searching for name or code attributes
+        ParameterizedTypeReference<DataListEntity<SKU>> responseType = new ParameterizedTypeReference<>() {
+        };
+        Optional<DataListEntity<SKU>> responseEntity = getConnector().getResource("/skus", Collections.emptyMap(), queryParams, responseType);
+        Optional<List<SKU>> skus = responseEntity.map(DataListEntity::getData);
+        return skus.orElse(Collections.emptyList());
     }
 
 }

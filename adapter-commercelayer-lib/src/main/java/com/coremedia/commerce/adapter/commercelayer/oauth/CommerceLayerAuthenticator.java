@@ -66,7 +66,7 @@ public class CommerceLayerAuthenticator implements ClientHttpRequestInterceptor 
         if (token == null) {
             return requestNewToken();
         } else {
-            LOG.debug("Refreshing access token.");
+            LOG.info("Refreshing access token.");
 
             Map<String, String> payload = Map.of(
                     "grant_type", GRANT_TYPE_CLIENT_CREDENTIALS,
@@ -80,7 +80,7 @@ public class CommerceLayerAuthenticator implements ClientHttpRequestInterceptor 
     }
 
     public @Nullable AccessToken requestNewToken() {
-        LOG.debug("Requesting new access token.");
+        LOG.info("Requesting new access token.");
 
         Map<String, String> payload = Map.of(
                 "grant_type", GRANT_TYPE_CLIENT_CREDENTIALS,
@@ -101,7 +101,7 @@ public class CommerceLayerAuthenticator implements ClientHttpRequestInterceptor 
         try {
             ResponseEntity<AccessToken> responseEntity = restTemplate.exchange(tokenRequestUrl, HttpMethod.POST, requestEntity, AccessToken.class);
             AccessToken token = responseEntity.getBody();
-            LOG.debug("Fetched access token {}.", token);
+            LOG.info("Fetched access token {}.", token);
             return token;
 
         } catch (HttpClientErrorException e) {

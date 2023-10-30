@@ -41,20 +41,25 @@ public class CommerceLayerApiConnector {
     }
 
     public <T> Optional<T> getResource(String resourcePath, ParameterizedTypeReference<T> responseType) {
-        return getResource(resourcePath, Collections.emptyMap(), responseType);
+        return getResource(resourcePath, Collections.emptyMap(), ImmutableListMultimap.of(), responseType);
     }
 
     public <T> Optional<T> getResource(String resourcePath, Map<String, String> pathParams, ParameterizedTypeReference<T> responseType) {
+        return getResource(resourcePath, pathParams, ImmutableListMultimap.of(), responseType);
+    }
+
+    public <T> Optional<T> getResource(String resourcePath, Map<String, String> pathParams, ListMultimap<String, String> queryParams, ParameterizedTypeReference<T> responseType) {
         requireNonEmptyResourcePath(resourcePath);
-        String url = buildRequestTemplateUrl(resourcePath, Collections.emptySet(), false);
+        String url = buildRequestTemplateUrl(resourcePath, queryParams.keySet(), false);
         HttpEntity<Object> requestEntity = new HttpEntity<>(buildHttpHeaders());
 
+        Map<String, String> uriVariables = mergeUrlParams(pathParams, queryParams);
         try {
-            ResponseEntity<T> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, responseType, pathParams);
+            ResponseEntity<T> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, responseType, uriVariables);
             return Optional.ofNullable(responseEntity.getBody());
 
         } catch (HttpClientErrorException ex) {
-            LOG.trace("Call to '{}' with params '{}' raised exception.", url, pathParams, ex);
+            LOG.trace("Call to '{}' with params '{}' raised exception.", url, uriVariables, ex);
             HttpStatus statusCode = ex.getStatusCode();
             switch (statusCode) {
                 case NOT_FOUND: {
@@ -65,7 +70,7 @@ public class CommerceLayerApiConnector {
                     LOG.info("Retrying with a new access token ...");
                     authenticator.refreshAccessToken();
 
-                    ResponseEntity<T> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, responseType, pathParams);
+                    ResponseEntity<T> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, responseType, uriVariables);
                     return Optional.ofNullable(responseEntity.getBody());
                 }
                 default: {

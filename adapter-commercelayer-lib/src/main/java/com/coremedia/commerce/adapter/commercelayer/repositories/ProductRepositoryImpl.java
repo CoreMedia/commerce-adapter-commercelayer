@@ -2,6 +2,7 @@ package com.coremedia.commerce.adapter.commercelayer.repositories;
 
 import com.coremedia.commerce.adapter.base.entities.*;
 import com.coremedia.commerce.adapter.base.repositories.ProductRepository;
+import com.coremedia.commerce.adapter.commercelayer.api.entities.CommerceLayerApiEntity;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.SKU;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.ShippingCategory;
 import com.coremedia.commerce.adapter.commercelayer.api.resources.SKUResource;
@@ -52,8 +53,12 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public SearchResult search(SearchQuery searchQuery) {
-        // TODO: Implement product search
-        return null;
+        List<SKU> results = skuResource.searchSkus(searchQuery.getSearchTerm().get());
+        List<Id> skuIds = results.stream()
+                .map(CommerceLayerApiEntity::getId)
+                .map(ExternalId::of)
+                .collect(Collectors.toList());
+        return SearchResult.builder().setTotalCount(results.size()).setEntityIds(skuIds).build();
     }
 
 
