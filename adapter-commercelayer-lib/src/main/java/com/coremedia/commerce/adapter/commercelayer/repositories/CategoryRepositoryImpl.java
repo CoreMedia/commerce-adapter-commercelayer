@@ -72,8 +72,10 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         } else {
             // fetch category via API
             category = shippingCategoriesResource.getShippingCategory(categoryId.getValue()).map(this::toCategory);
+            if (category.isEmpty()) {
+                category = skuListsResource.getSkuList(categoryId.getValue()).map(this::toSKUCategory);
+            }
         }
-
         return category;
     }
 
@@ -106,9 +108,23 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         return categoryBuilder.build();
     }
 
-    private Category toCategory(SKUList skuList) {
+    private Category toSKUCategory(SKUList skuList) {
         // TODO: Implement (see above #toCategory)
-        return null;
+        ExternalId id = ExternalId.of(skuList.getId());
+        String name = skuList.getAttributes().getName();
+        CategoryBuilder categoryBuilder = Category.builder(id, name);
+        categoryBuilder.setSeoSegment(skuList.getAttributes().getReference());
+        categoryBuilder.setTitle(name);
+        
+        categoryBuilder.setParentId(SKU_LISTS_CATEGORY_ID);
+        
+        List<Id> assignedProducts = skuListsResource.getAssociatedSkus(skuList.getId()).stream()
+                .map(SKU::getId)
+                .map(ExternalId::of)
+                .collect(Collectors.toList());
+        categoryBuilder.setProductIds(assignedProducts);
+        
+        return categoryBuilder.build();
     }
 
     private void initVirtualCategories() {
@@ -148,6 +164,11 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         categoryBuilder.setParentId(rootCategory.getExternalId());
 
         // TODO: Fetch all SKU lists and add them like we do with shipping categories (see above)
+        List<Id> skuListsIds = skuListsResource.listSkuLists().stream()
+                .map(CommerceLayerApiEntity::getId)
+                .map(ExternalId::of)
+                .collect(Collectors.toList());
+        categoryBuilder.setChildIds(skuListsIds);
 
         return categoryBuilder.build();
     }
