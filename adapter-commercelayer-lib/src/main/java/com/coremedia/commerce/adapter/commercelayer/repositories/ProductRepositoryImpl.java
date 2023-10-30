@@ -7,6 +7,7 @@ import com.coremedia.commerce.adapter.commercelayer.api.entities.ShippingCategor
 import com.coremedia.commerce.adapter.commercelayer.api.resources.SKUResource;
 import edu.umd.cs.findbugs.annotations.DefaultAnnotation;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -51,6 +52,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public SearchResult search(SearchQuery searchQuery) {
+        // TODO: Implement product search
         return null;
     }
 
@@ -61,7 +63,22 @@ public class ProductRepositoryImpl implements ProductRepository {
         ExternalId externalId = ExternalId.of(sku.getId());
         Optional<ShippingCategory> shippingCategory = skuResource.getShippingCategoryForSku(sku.getId());
         Id categoryId = ExternalId.of(shippingCategory.map(ShippingCategory::getId).orElse("_no-category"));
-        return Product.builder(externalId, sku.getAttributes().getName(), categoryId).build();
+        SKU.Attributes skuAttributes = sku.getAttributes();
+        String name = skuAttributes.getName();
+
+        if (StringUtils.isBlank(name)) {
+            name = sku.getId();
+        }
+
+        ProductBuilder productBuilder = Product.builder(externalId, name, categoryId);
+        productBuilder.setTitle(name);
+        productBuilder.setLongDescription(skuAttributes.getDescription());
+        productBuilder.setShortDescription(skuAttributes.getDescription());
+        productBuilder.setTechId(TechId.of(skuAttributes.getCode()));
+        productBuilder.setDefaultImageUrl(skuAttributes.getImageUrl());
+        productBuilder.setThumbnailImageUrl(skuAttributes.getImageUrl());
+
+        return productBuilder.build();
     }
 
 
