@@ -56,6 +56,8 @@ public class CommerceLayerAuthenticator implements ClientHttpRequestInterceptor 
     public AccessToken getAccessToken() {
         if (token == null) {
             token = requestNewToken();
+        } else if (token.isExpired()) {
+            token = refreshAccessToken();
         }
         return token;
     }

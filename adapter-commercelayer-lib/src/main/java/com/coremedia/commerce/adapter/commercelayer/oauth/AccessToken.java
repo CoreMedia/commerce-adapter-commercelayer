@@ -14,13 +14,13 @@ public class AccessToken {
     private String tokenType;
 
     @JsonProperty("expires_in")
-    private int expiresIn;
+    private long expiresIn;
 
     @JsonProperty("scope")
     private String scope;
 
     @JsonProperty("created_at")
-    private int createdAt;
+    private long createdAt;
 
     public String getValue() {
         return value;
@@ -38,11 +38,11 @@ public class AccessToken {
         this.tokenType = tokenType;
     }
 
-    public int getExpiresIn() {
+    public long getExpiresIn() {
         return expiresIn;
     }
 
-    public void setExpiresIn(int expiresIn) {
+    public void setExpiresIn(long expiresIn) {
         this.expiresIn = expiresIn;
     }
 
@@ -54,20 +54,25 @@ public class AccessToken {
         this.scope = scope;
     }
 
-    public int getCreatedAt() {
+    public long getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(int createdAt) {
+    public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public boolean isExpired() {
+        return System.currentTimeMillis() - createdAt > (expiresIn - 10) * 1000; // expires 10 seconds earlier
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "{" +
-                "value:" + value +
-                ", tokenType:" + tokenType +
-                ", scope:" + scope +
+                "value=" + value +
+                ", tokenType=" + tokenType +
+                ", scope=" + scope +
+                ", expired=" + isExpired() +
                 "}";
     }
 }
