@@ -23,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class CategoryRepositoryImplIT extends AbstractCommerceLayerIT {
 
     private static final EntityParams ENTITY_PARAMS = EntityParams.builder().setLocale(Locale.ENGLISH).build();
+    private static String SHIPPING_CATEGORY_ID = "zwzQeFeeoN";
+    private static String SKU_LIST_ID = "yRXZIeLBjn";
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -34,8 +36,16 @@ public class CategoryRepositoryImplIT extends AbstractCommerceLayerIT {
     }
 
     @Test
-    public void testGetCategoryById() {
-        IdQuery idQuery = IdQuery.from(ExternalId.of("zwzQeFeeoN"), ENTITY_PARAMS);
+    public void testGetShippingCategoryCategoryById() {
+
+        IdQuery idQuery = IdQuery.from(ExternalId.of(SHIPPING_CATEGORY_ID), ENTITY_PARAMS);
+        Optional<Category> category = categoryRepository.getCategoryById(idQuery);
+        assertTrue(category.isPresent());
+    }
+
+    @Test
+    public void testSKUListCategoryCategoryById() {
+        IdQuery idQuery = IdQuery.from(ExternalId.of(SKU_LIST_ID), ENTITY_PARAMS);
         Optional<Category> category = categoryRepository.getCategoryById(idQuery);
         assertTrue(category.isPresent());
     }

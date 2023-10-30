@@ -16,7 +16,7 @@ public class PaginatedEntity<T> {
     private Metadata meta;
 
     @JsonProperty("links")
-    private Map<String, String> links;
+    private Links links;
 
     public List<T> getData() {
         return data;
@@ -34,15 +34,15 @@ public class PaginatedEntity<T> {
         this.meta = meta;
     }
 
-    public Map<String, String> getLinks() {
+    public Links getLinks() {
         return links;
     }
 
-    public void setLinks(Map<String, String> links) {
+    public void setLinks(Links links) {
         this.links = links;
     }
 
-    public class Metadata {
+    public static class Metadata {
         @JsonProperty("record_count")
         private int recordCount;
         @JsonProperty("page_count")
@@ -65,7 +65,7 @@ public class PaginatedEntity<T> {
         }
     }
 
-    public class Links {
+    public static class Links {
         @JsonProperty("first")
         private String first;
         @JsonProperty("next")

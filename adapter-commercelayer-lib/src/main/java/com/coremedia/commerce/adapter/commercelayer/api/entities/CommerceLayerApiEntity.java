@@ -10,6 +10,8 @@ public abstract class CommerceLayerApiEntity {
     private String id;
     @JsonProperty("type")
     private String type;
+    @JsonProperty("meta")
+    private Metadata metadata;
 
     public String getId() {
         return id;
@@ -25,5 +27,37 @@ public abstract class CommerceLayerApiEntity {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
+    }
+
+    public static class Metadata {
+
+        @JsonProperty("mode")
+        private String mode;
+        @JsonProperty("organization_id")
+        private String organizationId;
+
+        public String getMode() {
+            return mode;
+        }
+
+        public void setMode(String mode) {
+            this.mode = mode;
+        }
+
+        public String getOrganizationId() {
+            return organizationId;
+        }
+
+        public void setOrganizationId(String organizationId) {
+            this.organizationId = organizationId;
+        }
     }
 }

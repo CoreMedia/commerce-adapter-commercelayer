@@ -1,6 +1,7 @@
 package com.coremedia.commerce.adapter.commercelayer.api.resources;
 
 import com.coremedia.commerce.adapter.commercelayer.CommerceLayerApiConnector;
+import com.coremedia.commerce.adapter.commercelayer.api.entities.DataEntity;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.PaginatedEntity;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.SKU;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.SKUList;
@@ -32,16 +33,17 @@ public class SKUListsResource extends CommerceLayerApiResource {
 
     public Optional<SKUList> getSkuList(String id) {
         LOG.debug("Fetching SKU list with id {}.", id);
-        ParameterizedTypeReference<SKUList> responseType = new ParameterizedTypeReference<>() {
+        ParameterizedTypeReference<DataEntity<SKUList>> responseType = new ParameterizedTypeReference<>() {
         };
-        return getConnector().getResource("/sku_lists/{id}", Map.of(ID_PARAM, id), responseType);
+        Optional<DataEntity<SKUList>> responseEntity = getConnector().getResource("/sku_lists/{id}", Map.of(ID_PARAM, id), responseType);
+        return responseEntity.map(DataEntity::getData);
     }
 
     public List<SKU> getAssociatedSkus(String id) {
-        ParameterizedTypeReference<DataListEntity<SKU>> responseType = new ParameterizedTypeReference<>() {
+        ParameterizedTypeReference<PaginatedEntity<SKU>> responseType = new ParameterizedTypeReference<>() {
         };
-        Optional<DataListEntity<SKU>> responseEntity = getConnector().getResource("/sku_lists/{id}/skus", Map.of(ID_PARAM, id), responseType);
-        Optional<List<SKU>> skus = responseEntity.map(DataListEntity::getData);
+        Optional<PaginatedEntity<SKU>> responseEntity = getConnector().getResource("/sku_lists/{id}/skus", Map.of(ID_PARAM, id), responseType);
+        Optional<List<SKU>> skus = responseEntity.map(PaginatedEntity::getData);
         return skus.orElse(Collections.emptyList());
     }
 }
