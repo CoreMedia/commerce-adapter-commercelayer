@@ -5,6 +5,7 @@ import com.coremedia.commerce.adapter.commercelayer.api.entities.DataEntity;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.PaginatedEntity;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.SKU;
 import com.coremedia.commerce.adapter.commercelayer.api.entities.ShippingCategory;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -45,6 +46,11 @@ public class ShippingCategoriesResource extends CommerceLayerApiResource {
         Optional<PaginatedEntity<SKU>> responseEntity = getConnector().getResource("/shipping_categories/{id}/skus", Map.of(ID_PARAM, id), responseType);
         Optional<List<SKU>> skus = responseEntity.map(PaginatedEntity::getData);
         return skus.orElse(Collections.emptyList());
+    }
+
+    public List<ShippingCategory> searchShippingCategories(@NonNull String searchTerm) {
+        // TODO: Search for a match in attributes name or reference
+        return Collections.emptyList();
     }
 
 }
