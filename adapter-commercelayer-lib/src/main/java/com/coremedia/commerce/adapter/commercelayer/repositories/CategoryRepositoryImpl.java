@@ -73,7 +73,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
             // fetch category via API
             category = shippingCategoriesResource.getShippingCategory(categoryId.getValue()).map(this::toCategory);
             if (category.isEmpty()) {
-                category = skuListsResource.getSkuList(categoryId.getValue()).map(this::toCategory);
+                category = skuListsResource.getSkuList(categoryId.getValue()).map(this::toSKUCategory);
             }
         }
         return category;
@@ -83,8 +83,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     public Optional<Category> getCategoryBySeoSegment(SeoSegmentQuery seoSegmentQuery) {
         LOG.debug("Fetching category for seo segment query: {}.", seoSegmentQuery);
         String seoSegment = seoSegmentQuery.getSeoSegment();
-        // TODO: Maybe use the "reference" field or "name" instead of the id to find the category
-        Optional<Category> category = shippingCategoriesResource.getShippingCategory(seoSegment).map(this::toCategory);
+        Optional<Category> category = shippingCategoriesResource.searchShippingCategories(seoSegment).stream().findFirst().map(this::toCategory);
         return category;
     }
 
@@ -114,13 +113,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         return categoryBuilder.build();
     }
 
-    /**
-     * Convert a {@link SKUList} to a Commerce Hub {@link Category} entity.
-     *
-     * @param skuList the SKU list
-     * @return
-     */
-    private Category toCategory(SKUList skuList) {
+    private Category toSKUCategory(SKUList skuList) {
         ExternalId id = ExternalId.of(skuList.getId());
         String name = skuList.getAttributes().getName();
         CategoryBuilder categoryBuilder = Category.builder(id, name);
