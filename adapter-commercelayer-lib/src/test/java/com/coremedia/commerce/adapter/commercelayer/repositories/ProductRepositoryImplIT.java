@@ -27,7 +27,7 @@ public class ProductRepositoryImplIT extends AbstractCommerceLayerIT {
     @Test
     public void testGetProducts() {
         Iterable<Product> products = productRepository.getProducts(ENTITY_PARAMS);
-        assertThat(products).hasSize(1);
+        assertThat(products).hasSize(10);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class ProductRepositoryImplIT extends AbstractCommerceLayerIT {
         SearchQuery searchQuery = SearchQuery.builder(ENTITY_PARAMS).setSearchTerm("shirt").build();
         SearchResult result = productRepository.search(searchQuery);
         assertNotNull(result);
-        assertEquals(1, result.getTotalCount());
+        assertEquals(10, result.getTotalCount());
         assertEquals("WPwySLNVdQ", result.getEntityIds().get(0).getValue());
 
         searchQuery = SearchQuery.builder(ENTITY_PARAMS).setSearchTerm("nonexisting").build();
