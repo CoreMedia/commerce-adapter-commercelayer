@@ -7,20 +7,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class AccessToken {
 
-    @JsonProperty("access_token")
-    private String value;
+  @JsonProperty("access_token")
+  private String value;
 
-    @JsonProperty("token_type")
-    private String tokenType;
+  @JsonProperty("token_type")
+  private String tokenType;
 
   @JsonProperty("expires_in")
   private long expiresIn; // seconds
 
-    @JsonProperty("scope")
-    private String scope;
+  @JsonProperty("scope")
+  private String scope;
 
-    @JsonProperty("created_at")
-    private long createdAt;
+  @JsonProperty("created_at")
+  private long createdAt;
 
   private long fetchedAt;
 
@@ -32,41 +32,41 @@ public class AccessToken {
     return value;
   }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+  public void setValue(String value) {
+    this.value = value;
+  }
 
-    public String getTokenType() {
-        return tokenType;
-    }
+  public String getTokenType() {
+    return tokenType;
+  }
 
-    public void setTokenType(String tokenType) {
-        this.tokenType = tokenType;
-    }
+  public void setTokenType(String tokenType) {
+    this.tokenType = tokenType;
+  }
 
-    public long getExpiresIn() {
-        return expiresIn;
-    }
+  public long getExpiresIn() {
+    return expiresIn;
+  }
 
-    public void setExpiresIn(long expiresIn) {
-        this.expiresIn = expiresIn;
-    }
+  public void setExpiresIn(long expiresIn) {
+    this.expiresIn = expiresIn;
+  }
 
-    public String getScope() {
-        return scope;
-    }
+  public String getScope() {
+    return scope;
+  }
 
-    public void setScope(String scope) {
-        this.scope = scope;
-    }
+  public void setScope(String scope) {
+    this.scope = scope;
+  }
 
-    public long getCreatedAt() {
-        return createdAt;
-    }
+  public long getCreatedAt() {
+    return createdAt;
+  }
 
-    public void setCreatedAt(long createdAt) {
-        this.createdAt = createdAt;
-    }
+  public void setCreatedAt(long createdAt) {
+    this.createdAt = createdAt;
+  }
 
   public long getExpiresAt() {
     return fetchedAt + expiresIn;

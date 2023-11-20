@@ -17,33 +17,33 @@ import java.util.Optional;
 
 public class SKUListsResource extends CommerceLayerApiResource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    public SKUListsResource(CommerceLayerApiConnector connector) {
-        super(connector);
-    }
+  public SKUListsResource(CommerceLayerApiConnector connector) {
+    super(connector);
+  }
 
-    public List<SKUList> listSkuLists() {
-        LOG.debug("Fetching SKU lists");
-        ParameterizedTypeReference<PaginatedEntity<SKUList>> responseType = new ParameterizedTypeReference<>() {
-        };
-        Optional<PaginatedEntity<SKUList>> responseEntity = getConnector().getResource("/sku_lists", responseType);
-        return responseEntity.map(PaginatedEntity::getData).orElse(Collections.emptyList());
-    }
+  public List<SKUList> listSkuLists() {
+    LOG.debug("Fetching all SKU lists");
+    ParameterizedTypeReference<PaginatedEntity<SKUList>> responseType = new ParameterizedTypeReference<>() {
+    };
+    Optional<PaginatedEntity<SKUList>> responseEntity = getConnector().getResource("/sku_lists", responseType);
+    return responseEntity.map(PaginatedEntity::getData).orElse(Collections.emptyList());
+  }
 
-    public Optional<SKUList> getSkuList(String id) {
-        LOG.debug("Fetching SKU list with id {}.", id);
-        ParameterizedTypeReference<DataEntity<SKUList>> responseType = new ParameterizedTypeReference<>() {
-        };
-        Optional<DataEntity<SKUList>> responseEntity = getConnector().getResource("/sku_lists/{id}", Map.of(ID_PARAM, id), responseType);
-        return responseEntity.map(DataEntity::getData);
-    }
+  public Optional<SKUList> getSkuList(String id) {
+    LOG.debug("Fetching SKU list with id {}.", id);
+    ParameterizedTypeReference<DataEntity<SKUList>> responseType = new ParameterizedTypeReference<>() {
+    };
+    Optional<DataEntity<SKUList>> responseEntity = getConnector().getResource("/sku_lists/{id}", Map.of(ID_PARAM, id), responseType);
+    return responseEntity.map(DataEntity::getData);
+  }
 
-    public List<SKU> getAssociatedSkus(String id) {
-        ParameterizedTypeReference<PaginatedEntity<SKU>> responseType = new ParameterizedTypeReference<>() {
-        };
-        Optional<PaginatedEntity<SKU>> responseEntity = getConnector().getResource("/sku_lists/{id}/skus", Map.of(ID_PARAM, id), responseType);
-        Optional<List<SKU>> skus = responseEntity.map(PaginatedEntity::getData);
-        return skus.orElse(Collections.emptyList());
-    }
+  public List<SKU> getAssociatedSkus(String id) {
+    ParameterizedTypeReference<PaginatedEntity<SKU>> responseType = new ParameterizedTypeReference<>() {
+    };
+    Optional<PaginatedEntity<SKU>> responseEntity = getConnector().getResource("/sku_lists/{id}/skus", Map.of(ID_PARAM, id), responseType);
+    Optional<List<SKU>> skus = responseEntity.map(PaginatedEntity::getData);
+    return skus.orElse(Collections.emptyList());
+  }
 }
