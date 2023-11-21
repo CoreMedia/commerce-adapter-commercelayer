@@ -52,7 +52,7 @@ pipeline {
       agent {
         docker {
           image "${Jenkins.ecrPullThroughProxyRegistry}/cm-tools/maven:3.8.6-11.0.17.8-1-cm-1.1.1"
-          args DockerAgent.defaultMavenArgs
+          args "-e DOCKER_CONFIG=/.docker ${DockerAgent.defaultMavenArgs} ${DockerAgent.defaultDockerArgs} -v /home/coremedia-ci/.docker/config.json:/.docker/config.json"
           reuseNode true
         }
       }
@@ -67,7 +67,11 @@ pipeline {
 
   post {
     always {
-      cmCleanup()
+      script {
+        awsEcrLogout(server: AWS_ECR_URI)
+        cmCleanup()
+      }
+
     }
   }
 
