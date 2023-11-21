@@ -9,9 +9,10 @@ String AWS_REGISTRY_ID = '601133629472'
 String AWS_REGION = 'eu-central-1'
 String AWS_ECR_HOST = "${AWS_REGISTRY_ID}.dkr.ecr.eu-central-1.amazonaws.com"
 String DOCKER_REGISTRY = "coremedia-cs"
-String DOCKER_IMAGE_TAG = "0.1.0"
 String ECR_REGISTRY_PATH = "${AWS_ECR_HOST}/${DOCKER_REGISTRY}"
 String JENKINS_CREDENTIALS_ID = 'presales-aws-credentials-eu-central-1'
+
+String ecrTag;
 
 pipeline {
 
@@ -29,6 +30,19 @@ pipeline {
   }
 
   stages {
+
+    stage('Prepare') {
+      ecrTag = params.ECR_TAG
+    }
+
+    stage('AWS Login') {
+      steps {
+        awsContext(jenkinsCredentialsId: JENKINS_CREDENTIALS_ID, region: AWS_REGION, profileName: 'default') {
+          awsEcrLogin(registryId: AWS_REGISTRY_ID, region: AWS_REGION)
+        }
+      }
+    }
+
     stage('Build and Push Docker Image') {
       agent {
         docker {
@@ -39,7 +53,7 @@ pipeline {
       }
       steps {
         script {
-          String dockerOptions = "-Pdefault-image -Djib.useOnlyProjectCache=true -Djib.goal=build -Djib.allowInsecureRegistries=true -Dapplication.image-prefix=${ECR_REGISTRY_PATH} -Dapplication.image-tag=${DOCKER_IMAGE_TAG} "
+          String dockerOptions = "-Pdefault-image -Djib.useOnlyProjectCache=true -Djib.goal=build -Djib.allowInsecureRegistries=true -Dapplication.image-prefix=${ECR_REGISTRY_PATH} -Dapplication.image-tag=${ecrTag} "
           cmMaven(cmd: "clean install -Pdefault-image " + dockerOptions, scanMvnLog: true)
         }
       }
