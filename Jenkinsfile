@@ -68,7 +68,7 @@ pipeline {
   post {
     always {
       script {
-        awsEcrLogout(server: AWS_ECR_URI)
+        awsEcrLogout(server: AWS_ECR_HOST)
         cmCleanup()
       }
 
