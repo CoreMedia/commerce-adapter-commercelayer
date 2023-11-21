@@ -32,7 +32,12 @@ pipeline {
   stages {
 
     stage('Prepare') {
-      ecrTag = params.ECR_TAG
+      steps {
+        script {
+          cmRequireParameters('ECR_TAG')
+          ecrTag = params.ECR_TAG
+        }
+      }
     }
 
     stage('AWS Login') {
