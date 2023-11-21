@@ -58,7 +58,6 @@ pipeline {
       }
       steps {
         script {
-          echo "Building Docker image: '${ECR_REGISTRY_PATH}:${ecrTag}'"
           String dockerOptions = "-Pdefault-image -Djib.useOnlyProjectCache=true -Djib.goal=build -Djib.allowInsecureRegistries=true -Dapplication.image-prefix=${ECR_REGISTRY_PATH} -Dapplication.image-tag=${ecrTag} "
           cmMaven(cmd: "clean install -Pdefault-image " + dockerOptions, scanMvnLog: true)
         }
