@@ -19,53 +19,79 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * REST resource for <a href="https://docs.commercelayer.io/core/v/api-reference/shipping_categories/object">Shipping Categories</a> retrieval.
+ */
 public class ShippingCategoriesResource extends CommerceLayerApiResource {
 
-  private static final String SHIPPING_CATEGORIES_PATH = "/shipping_categories";
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final String SHIPPINGCATEGORIES_PATH = "/shipping_categories";
-    private static final String SHIPPINGCATEGORIES_ID_PATH = SHIPPINGCATEGORIES_PATH + "/{id}";
-    // private static final String SKUS_SHIPPING_CATEGORY_PATH = SKUS_ID_PATH + "/shipping_category";
-    private static final String SHIPPINGCATEGORIE_SEARCH_FILTER = "filter[q][reference_eq]"; // see: https://docs.commercelayer.io/core/filtering-data
+
+  private static final String SHIPPING_CATEGORIES_PATH = "/shipping_categories";
+  private static final String SHIPPING_CATEGORIES_ID_PATH = SHIPPING_CATEGORIES_PATH + "/{id}";
+  private static final String SHIPPING_CATEGORIES_SKUS_PATH = SHIPPING_CATEGORIES_ID_PATH + "/skus";
+
+  private static final String SHIPPING_CATEGORY_SEARCH_FILTER = "filter[q][reference_eq]"; // see: https://docs.commercelayer.io/core/filtering-data
 
 
   public ShippingCategoriesResource(CommerceLayerApiConnector connector) {
     super(connector);
   }
 
+  /**
+   * Fetch all shipping categories.
+   *
+   * @return list of all shipping categories.
+   */
   public List<ShippingCategory> listShippingCategories() {
-    LOG.debug("Fetching all shipping categories");
-    ParameterizedTypeReference<PaginatedEntity<ShippingCategory>> responseType = new ParameterizedTypeReference<>() {
-    };
-    return fetchAllPages(SHIPPING_CATEGORIES_PATH, responseType);
+    LOG.debug("Fetching all shipping categories.");
+    List<ShippingCategory> shippingCategories = fetchAllPages(SHIPPING_CATEGORIES_PATH, RESPONSE_TYPE_PAGINATED_ENTITY_SHIPPING_CATEGORY);
+    LOG.debug("Fetched {} shipping categories.", shippingCategories.size());
+    return shippingCategories;
   }
 
+  /**
+   * Retrieve a shipping category by its id.
+   *
+   * @param id the shipping category id.
+   * @return {@link Optional} with the resulting {@link ShippingCategory} or an {@link Optional#empty()}.
+   */
   public Optional<ShippingCategory> getShippingCategory(String id) {
-    ParameterizedTypeReference<DataEntity<ShippingCategory>> responseType = new ParameterizedTypeReference<>() {
-    };
-    Optional<DataEntity<ShippingCategory>> responseEntity = getConnector().getResource("/shipping_categories/{id}", Map.of(ID_PARAM, id), responseType);
-    Optional<ShippingCategory> shippingCategory = responseEntity.map(DataEntity::getData);
-    return shippingCategory;
+    LOG.debug("Fetching shipping category with id {}.", id);
+    Optional<DataEntity<ShippingCategory>> responseEntity = getConnector().getResource("/shipping_categories/{id}", Map.of(ID_PARAM, id), RESPONSE_TYPE_DATA_ENTITY_SHIPPING_CATEGORY);
+    return responseEntity.map(DataEntity::getData);
   }
 
+  /**
+   * Get a list of associated {@link SKU}s for the given shipping category id.
+   *
+   * @param id the shipping category id.
+   * @return list of associated {@link SKU}s.
+   */
   public List<SKU> getAssociatedSkus(String id) {
-    ParameterizedTypeReference<PaginatedEntity<SKU>> responseType = new ParameterizedTypeReference<>() {
-    };
-    Optional<PaginatedEntity<SKU>> responseEntity = getConnector().getResource("/shipping_categories/{id}/skus", Map.of(ID_PARAM, id), responseType);
-    Optional<List<SKU>> skus = responseEntity.map(PaginatedEntity::getData);
-    return skus.orElse(Collections.emptyList());
+    LOG.debug("Fetching associated SKUs for category {}.", id);
+    Map<String, String> additionalQueryParams = Map.of(INCLUDE_PARAM, SKU_DEFAULT_INCLUDES_VALUE);
+    List<SKU> skus = fetchAllPages(SHIPPING_CATEGORIES_SKUS_PATH, Map.of(ID_PARAM, id), RESPONSE_TYPE_PAGINATED_ENTITY_SKU, additionalQueryParams);
+    LOG.debug("Fetched {} associated SKUs for category {}.", skus.size(), id);
+    return skus;
   }
 
+  /**
+   * Search shipping categories by the given search term.
+   *
+   * @param searchTerm search term
+   * @return a list of matching {@link ShippingCategory}s or an empty list.
+   */
   public List<ShippingCategory> searchShippingCategories(@NonNull String searchTerm) {
-    // TODO: Search for a match in attributes name or reference
-    LOG.debug("Searching Shipping Categories for search term: {}", searchTerm);
-        if (StringUtils.isBlank(searchTerm)) {return Collections.emptyList();
-  }ListMultimap<String, String> queryParams = ImmutableListMultimap.of(SHIPPINGCATEGORIE_SEARCH_FILTER, searchTerm);
-        ParameterizedTypeReference<PaginatedEntity<ShippingCategory>> responseType = new ParameterizedTypeReference<>() {
-        };
-        Optional<PaginatedEntity<ShippingCategory>> responseEntity = getConnector().getResource(SHIPPINGCATEGORIES_PATH, Collections.emptyMap(), queryParams, responseType);
-        Optional<List<ShippingCategory>> shippingCategories = responseEntity.map(PaginatedEntity::getData);
-        return shippingCategories.orElse(Collections.emptyList());
+    if (StringUtils.isBlank(searchTerm)) {
+      return Collections.emptyList();
     }
+
+    // TODO: Search for a match in attributes name or reference
+    LOG.debug("Searching Shipping Categories for search term '{}'.", searchTerm);
+    Map<String, String> additionalQueryParams = Map.of(SHIPPING_CATEGORY_SEARCH_FILTER, searchTerm);
+    List<ShippingCategory> hits = fetchAllPages(SHIPPING_CATEGORIES_PATH, RESPONSE_TYPE_PAGINATED_ENTITY_SHIPPING_CATEGORY, additionalQueryParams);
+    LOG.debug("Found {} shipping categories for search term '{}'.", hits.size(), searchTerm);
+    return hits;
+  }
 
 }

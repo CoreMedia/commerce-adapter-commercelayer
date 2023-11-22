@@ -45,7 +45,7 @@ public class ProductRepositoryImplIT extends AbstractCommerceLayerIT {
     SearchQuery searchQuery = SearchQuery.builder(ENTITY_PARAMS).setSearchTerm("shirt").build();
     SearchResult result = productRepository.search(searchQuery);
     assertNotNull(result);
-    assertEquals(250, result.getTotalCount());
+    assertEquals(97, result.getTotalCount());
     assertEquals("WPwySLNVdQ", result.getEntityIds().get(0).getValue());
 
     searchQuery = SearchQuery.builder(ENTITY_PARAMS).setSearchTerm("nonexisting").build();

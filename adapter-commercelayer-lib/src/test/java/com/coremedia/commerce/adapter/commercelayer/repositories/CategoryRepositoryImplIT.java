@@ -36,7 +36,6 @@ public class CategoryRepositoryImplIT extends AbstractCommerceLayerIT {
 
     @Test
     public void testGetShippingCategoryCategoryById() {
-
         IdQuery idQuery = IdQuery.from(ExternalId.of(SHIPPING_CATEGORY_ID), ENTITY_PARAMS);
         Optional<Category> category = categoryRepository.getCategoryById(idQuery);
         assertTrue(category.isPresent());
@@ -50,10 +49,9 @@ public class CategoryRepositoryImplIT extends AbstractCommerceLayerIT {
     }
     @Test
     public void testGetCategoryBySeoSegment() {
-        SeoSegmentQuery seoSegmentQuery = SeoSegmentQuery.from(SHIPPING_CATEGORY_NAME, ENTITY_PARAMS);
+        SeoSegmentQuery seoSegmentQuery = SeoSegmentQuery.from("shipping_category_1", ENTITY_PARAMS);
         Optional<Category> category = categoryRepository.getCategoryBySeoSegment(seoSegmentQuery);
         assertTrue(category.isPresent());
-        
     }
 
 }
